@@ -1,0 +1,50 @@
+tod=$1 
+audience=$2
+
+if [ "$tod" == "b" ] ; then
+   tod="breakfast"
+fi 
+if [ "$tod" == "l" ] ; then
+   tod="lunch"
+fi 
+if [ "$tod" == "d" ] ; then
+   tod="dinner"
+fi 
+if [ "$tod" == "s" ] ; then
+   tod="snacks"
+fi 
+
+if [ "$audience" == "k" ] ; then
+   audience="kids"
+fi 
+if [ "$audience" == "a" ] ; then
+   audience="adults"
+fi 
+if [ "$audience" == "al" ] ; then
+   audience="all"
+fi 
+if [ "$audience" == "v" ] ; then
+   audience="vivaan"
+fi 
+if [ "$audience" == "d" ] ; then
+   audience="diva"
+fi 
+
+grep $tod consumption | grep $audience | cut -d" " -f2,3,4,5 > resultfile
+#cat resultfile
+ln=1
+while IFS= read -r line
+do
+	ln=`expr $ln + 1 `
+	#echo $ln
+	#echo $line 
+	cat resultfile | tail -n +$ln > temp_resfile
+	grep "$line" temp_resfile > /dev/null 2>&1
+	if [ "$?" -eq 0 ]; then
+		# echo "matching $line successful"
+		continue
+	else
+		echo "$line"
+	fi
+done < resultfile
+rm -f resultfile temp_resfile

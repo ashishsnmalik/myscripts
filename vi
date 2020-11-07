@@ -1,0 +1,15 @@
+# Foreach argument check if the file is type go. If the file is type go, use nvim, else vi. 
+
+if [ $# -eq 0 ]; then
+	/usr/bin/vi
+else
+	if [[ $1 == *.go ]]; then
+		/usr/local/bin/nvim $*
+	elif [[ $1 == anki* ]] ; then
+		cd /Users/amalik/notes/anki
+		/usr/bin/vi `fzf`
+	else
+		/usr/bin/vi $*
+	fi
+
+fi
