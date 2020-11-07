@@ -1,0 +1,4 @@
+cd /Users/amalik/Documents/myscripts
+git add *
+git commit -m "a"
+git push
