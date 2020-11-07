@@ -1,3 +1,8 @@
+# This is to predict the next meal of the day 
+#
+
+cd /Users/amalik/Documents/myscripts
+
 tod=$1 
 audience=$2
 
