@@ -1,0 +1,6 @@
+tmpfile=`mktemp`
+chmod 755 /Users/amalik/notes/payments
+vi +startinsert $tmpfile 
+
+cat $tmpfile >> /Users/amalik/notes/payments
+chmod 400 /Users/amalik/notes/payments

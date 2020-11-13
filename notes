@@ -1,0 +1,14 @@
+num1=`date '+%Y'`
+yr=`expr $num1 - 2`
+#echo $yr
+dtmn=`date '+%d%b'`
+hhmm=`date '+%H%M'`
+#echo $dtmn
+name="Jyoti$dtmn$yr"
+#name="Jyoti$dtmn$yr.$hhmm"
+echo $name
+/usr/local/bin/joplin sync >/dev/null 2>&1 &
+/usr/local/bin/joplin use "Jyoti_old_payments"
+/usr/local/bin/joplin mknote $name
+/usr/local/bin/joplin edit $name
+/usr/local/bin/joplin sync >/dev/null 2>&1 &

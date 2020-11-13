@@ -1,0 +1,85 @@
+# Take the input in a different file 
+
+tmpfile=`mktemp`
+vi +startinsert $tmpfile 
+
+#tmpfile="a"
+
+# Proces Ad hoc Payments
+cat $tmpfile| grep "Transaction with reference"  # >/dev/null 2>&1 
+if [ $? -eq 0 ]; then
+# Get From, To, Amount, Comment from Bank Payments. 
+ 	cat $tmpfile
+	FromAccount=`cat $tmpfile | grep "From Account Number" | sed 's/ *//g'|sed 's/FromAccountNumber://'`
+	ToAccount=`cat $tmpfile | grep "To Account Number" | sed 's/ *//g'|sed 's/ToAccountNumber://'`
+	Amount=`cat $tmpfile | grep "Payment" | grep "INR" | sed 's/ *//g'|sed 's/PaymentOfINR//' | sed 's/to.*$//' |sed 's/,//' `
+	PayYear=`cat $tmpfile | grep "Payment" | grep "Date" | sed 's/ *//g'|sed 's/PaymentDate://' | sed 's:/:-/g' | awk -F'-' '{ print $3 }' `
+	PayMonth=`cat $tmpfile | grep "Payment" | grep "Date" | sed 's/ *//g'|sed 's/PaymentDate://' | sed 's:/:-/g' | awk -F'-' '{ print $2 }' `
+	PayDate=`cat $tmpfile | grep "Payment" | grep "Date" | sed 's/ *//g'|sed 's/PaymentDate://' | sed 's:/:-/g' | awk -F'-' '{ print $1 }' `
+	Remarks=`cat $tmpfile | grep "Remarks" | sed 's/ *//g'| sed 's/Remarks: *//' `
+	echo $FromAccount $ToAccount $Amount $PayYear $PayMonth $PayDate $Remarks
+
+	if [ "$FromAccount" == "240305000108" ];then
+		store="sth"
+	elif [ "$FromAccount" == "240305000087" ];then
+		store="sbr"
+	elif [ "$FromAccount" == "240305000105" ];then
+		store="qubix"
+	elif [ "$FromAccount" == "240305000106" ];then
+		store="cs"
+	elif [ "$FromAccount" == "240305000107" ];then
+		store="cdvs"
+	elif [ "$FromAccount" == "240305000528" ];then
+		store="ALL"
+	fi
+
+	if [ "$ToAccount" == "00090330003374" ];then
+		party="ESSAE"
+	elif [ "$ToAccount" == "5013227994" ];then
+		party="ManishSingh"
+	elif [ "$ToAccount" == "174610039169" ];then
+		party="RajKaran"
+	elif [ "$ToAccount" == "50200005020226" ];then
+		party="Jyoti"
+	elif [ "$ToAccount" == "009230100003018" ];then
+		party="PPSalesCoke"
+	elif [ "$ToAccount" == "600102000001946" ];then
+		party="Inamdar Vegetables"
+	elif [ "$ToAccount" == "5013227987" ];then
+		party="Staff Shankar Verma"
+	elif [ "$ToAccount" == "098601542160" ];then
+		party="Staff Amit Kumar Verma"
+	elif [ "$ToAccount" == "338001503120" ];then
+		party="Staff Avishek Singh"
+	elif [ "$ToAccount" == "338001503118" ];then
+		party="Staff Mili Thapa"
+	elif [ "$ToAccount" == "38372168436" ];then
+		party="Staff Singhasan"
+	elif [ "$ToAccount" == "098601542158" ];then
+		party="Staff Arvind Ahirwar"
+	elif [ "$ToAccount" == "098601543102" ];then
+		party="Staff OmPrakash Verma"
+	elif [ "$ToAccount" == "098601542157" ];then
+		party="Staff Ravindra Verma"
+	elif [ "$ToAccount" == "30229992242" ];then
+		party="Staff Sarvesh Kumar"
+	elif [ "$ToAccount" == "5013227994" ];then
+		party="Staff Manish Singh"
+	elif [ "$ToAccount" == "174610039169" ];then
+		party="Staff Raj Karan"
+	elif [ "$ToAccount" == "5013227451" ];then
+		party="Staff Bindraban"
+	elif [ "$ToAccount" == "5013226973" ];then
+		party="Staff Vishal Dhivare"
+	elif [ "$ToAccount" == "1005210010008560" ];then
+		party="StaffRoomTathawadePawar"
+	fi 
+
+	echo "$PayYear$PayMonth$PayDate $party $store $Amount $Remarks"
+	title="$PayYear$PayMonth$PayDate $party $store $Amount $Remarks"
+	cat $tmpfile > /tmp/abc123
+	/usr/local/bin/joplin import /tmp/abc123 DFPayments --format md
+	/usr/local/bin/joplin ren abc123 "$title"
+
+	rm -f /tmp/abc123
+fi 
